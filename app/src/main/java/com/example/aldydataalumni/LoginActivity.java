@@ -4,20 +4,25 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     EditText etEmail, etPassword;
     Button btLogin;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
+        sharedPreferences = getSharedPreferences("Pendataan Alumni", MODE_PRIVATE);
+
 
         etEmail = findViewById(R.id.email);
         etPassword = findViewById(R.id.password);
@@ -26,10 +31,29 @@ public class MainActivity extends AppCompatActivity {
         btLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etEmail.getText().toString().equals("aldy@mail.com") &&
+                if (etEmail.getText().toString().length() > 0 && etPassword.getText().toString().length()>0){
+                    //login check
+                    if (etEmail.getText().toString().equals("aldyh@mail.com") && etPassword.getText().toString().equals("123456")){
+                        //sukses login nih
+                        Intent intent = new Intent(LoginActivity.this, HomeActivity.class );
+                        startActivity(intent);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("email", "aldy@mail.com");
+                        editor.putString("nim", "4817090051");
+                        editor.putString("nama", "Aldy");
+                        editor.putString("kelas", "TI6");
+                        editor.apply();
+                        finish();
+                    } else  {
+                        Toast.makeText(LoginActivity.this, "Email atau Password Salah", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this,"LENGKAPI DATA", Toast.LENGTH_SHORT).show();
+                }
+               /* if (etEmail.getText().toString().equals("aldy@mail.com") &&
                 etPassword.getText().toString().equals("1234")){
                     AlertDialog.Builder builder = new AlertDialog.Builder(
-                            MainActivity.this
+                            LoginActivity.this
                     );
                     builder.setIcon(R.drawable.ic_check_circle);
                     builder.setTitle("Sukses");
@@ -46,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(),
                             "Salah", Toast.LENGTH_SHORT).show();
-                }
+                }*/
             }
         });
     }
